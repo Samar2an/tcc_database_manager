@@ -8,10 +8,15 @@ def set_globals ():
 
     global options
     options = {}
-    options['name'] = 'tcc_database_manager'
-    options['version'] = '2.1.1'
+    options['long_name'] = 'TCC Database Manager'
+    options['name'] = '_'.join(options['long_name'].lower().split())
+    options['version'] = '3.0'
+    options['local_dir'] = os.path.expanduser('~/Library/Application Support/com.apple.TCC')
+    options['local_db'] = os.path.join(options['local_dir'], 'TCC.db')
+    options['root_dir'] = '/Library/Application Support/com.apple.TCC'
+    options['root_db'] = os.path.join(options['root_dir'], 'TCC.db')
 
-def setupt_logger ():
+def setup_logger ():
     '''Creates the logger to be used throughout, after first checkign that the
     Management Logger package has been installed.
     '''
@@ -41,9 +46,9 @@ def setupt_logger ():
 def main ():
     set_globals()
     parse_options.parse(options)
-    setup_logger()
+    # setup_logger()
 
-    # To be continued...
+
 
 if __name__ == "__main__":
     main()

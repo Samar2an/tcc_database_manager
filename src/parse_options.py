@@ -13,26 +13,30 @@ def parse (options):
 
     parser = argparse.ArgumentParser(description="Can add or remove applications from the various TCC databases: Contacts, Accessbility, and iCloud.",
                                      add_help=False)
-    parser.add_argument('service',
-                        choices=['contacts', 'accessibility', 'icloud', 'help'])
     parser.add_argument('action',
-                        choices=['add', 'remove'])
-    parser.add_argument('app',
+                        choices=['add', 'remove', 'help'])
+    parser.add_argument('service',
+                        nargs='?',
+                        choices=['contacts', 'accessibility', 'icloud'],
+                        default=None)
+    parser.add_argument('apps',
                         nargs=argparse.REMAINDER)
     parser.add_argument('-l', '--log')
     parser.add_argument('-n', '--no-log',
                         action='store_false')
     parser.add_argument('-v', '--version',
                         action='version',
-                        version='TCC Database Manager ' + options['version'])
+                        version=options['long_name'] + ' ' + options['version'])
     args = parser.parse_args()
 
     # Consider adding sub-helps for each service?
     # Brief description or something?
-    if args.services = "help":
+    if args.action == "help":
         usage(options['name'])
-    options['service'] = args.services
+    options['service'] = args.service
     options['action'] = args.action
-    options['app'] = args.app
+    options['app'] = args.apps
     options['log_dest'] = args.log
     options['log'] = args.no_log
+
+    print args
