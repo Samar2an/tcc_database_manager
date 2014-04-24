@@ -11,10 +11,6 @@ def set_globals ():
     options['long_name'] = 'TCC Database Manager'
     options['name'] = '_'.join(options['long_name'].lower().split())
     options['version'] = '3.0'
-    options['local_dir'] = os.path.expanduser('~/Library/Application Support/com.apple.TCC')
-    options['local_db'] = os.path.join(options['local_dir'], 'TCC.db')
-    options['root_dir'] = '/Library/Application Support/com.apple.TCC'
-    options['root_db'] = os.path.join(options['root_dir'], 'TCC.db')
 
 def setup_logger ():
     '''Creates the logger to be used throughout, after first checkign that the
