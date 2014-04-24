@@ -2,6 +2,9 @@ import os
 import parse_options
 import sys
 
+from helpful_tools.app_info import AppInfo
+from tcc_edit import TCCEdit
+
 def set_globals ():
     '''Global options are set here.
     '''
@@ -44,7 +47,23 @@ def main ():
     parse_options.parse(options)
     # setup_logger()
 
+    bids = []
+    for app in options['apps']:
+        bids.append(AppInfo(app).bid)
 
+    print bids
+    return
+
+    if options['action'] == "add":
+        with TCCEdit(options['user']) as e:
+            for bid in bids:
+                logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
+                e.insert(options['service'], bid)
+    else:
+        with TCCEdit(options['user']) as e:
+            for bid in bids:
+                logger.info("Removing '" + bid + "' from " + options['service'] + " service.")
+                e.remove(options['service'], bid)
 
 if __name__ == "__main__":
     main()

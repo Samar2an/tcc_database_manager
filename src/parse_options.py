@@ -24,6 +24,8 @@ def parse (options):
     parser.add_argument('-l', '--log')
     parser.add_argument('-n', '--no-log',
                         action='store_false')
+    parser.add_argument('-u', '--user',
+                        default='')
     parser.add_argument('-v', '--version',
                         action='version',
                         version=options['long_name'] + ' ' + options['version'])
@@ -33,10 +35,17 @@ def parse (options):
     # Brief description or something?
     if args.action == "help":
         usage(options['name'])
-    options['service'] = args.service
     options['action'] = args.action
-    options['app'] = args.apps
+    if not args.service:
+        print "You must specify a service!"
+        sys.exit(5)
+    options['service'] = args.service
+    if not args.apps:
+        print "You must specify at least one application!"
+        sys.exit(5)
+    options['apps'] = args.apps
     options['log_dest'] = args.log
     options['log'] = args.no_log
+    options['user'] = args.user
 
     print args
