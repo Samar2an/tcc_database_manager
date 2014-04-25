@@ -22,7 +22,7 @@ def setup_logger ():
 
     # Check that the logging imports properly.
     try:
-        from management_logging import loggers
+        from helpful_tools import loggers
     except ImportError, e:
         print "You need the 'Management Logging' module to be installed first."
         print "https://github.com/univ-of-utah-marriott-library-apple/management_logging"
@@ -40,29 +40,34 @@ def setup_logger ():
             logger = loggers.file_logger(options['name'], path=options['log_dest'])
     else:
         # A dummy logger.  It won't record anything.
-        logger = loggers.stream_logger(0)
+        logger = loggers.stream_logger(1)
 
 def main ():
     set_globals()
     parse_options.parse(options)
-    # setup_logger()
+    setup_logger()
 
     bids = []
     for app in options['apps']:
         bids.append(AppInfo(app).bid)
 
-    print bids
-    return
+    logger.info("Found bundle IDs: " + str(bids))
 
     if options['action'] == "add":
         with TCCEdit(options['user']) as e:
             for bid in bids:
-                logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
+                if options['user']:
+                    logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
+                else:
+                    logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
                 e.insert(options['service'], bid)
     else:
         with TCCEdit(options['user']) as e:
             for bid in bids:
-                logger.info("Removing '" + bid + "' from " + options['service'] + " service.")
+                if options['user']:
+                    logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
+                else:
+                    logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
                 e.remove(options['service'], bid)
 
 if __name__ == "__main__":

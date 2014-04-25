@@ -23,7 +23,7 @@ def parse (options):
                         nargs=argparse.REMAINDER)
     parser.add_argument('-l', '--log')
     parser.add_argument('-n', '--no-log',
-                        action='store_false')
+                        action='store_true')
     parser.add_argument('-u', '--user',
                         default='')
     parser.add_argument('-v', '--version',
@@ -45,7 +45,5 @@ def parse (options):
         sys.exit(5)
     options['apps'] = args.apps
     options['log_dest'] = args.log
-    options['log'] = args.no_log
+    options['log'] = not args.no_log
     options['user'] = args.user
-
-    print args
