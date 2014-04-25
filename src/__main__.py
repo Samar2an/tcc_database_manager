@@ -9,8 +9,8 @@ try:
     from helpful_tools.app_info import AppInfo
     from helpful_tools import loggers
 except ImportError, e:
-    print "You need the 'Management Logging' module to be installed first."
-    print "https://github.com/univ-of-utah-marriott-library-apple/management_logging"
+    print "You need the 'Helpful Tools' module to be installed first."
+    print "https://github.com/univ-of-utah-marriott-library-apple/helpful_tools"
     print
     print "You can use the '-n' switch to ignore this:"
     print "  $ location_services_manager -n ..."
