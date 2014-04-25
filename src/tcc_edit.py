@@ -4,8 +4,7 @@ import sqlite3
 class TCCEdit:
     '''A class to help with editing the TCC databases.
 
-    This ought to be used in a with statement to ensure
-    proper closing of connections!
+    This ought to be used in a with statement to ensure proper closing of connections!
     '''
 
     def __init__(self, user=''):
@@ -43,6 +42,9 @@ class TCCEdit:
         return self
 
     def insert(self, service, bid):
+        '''Adds the specified bundle identifer to the specified service.
+        '''
+
         service = service.lower()
         if not service in self.services.keys():
             raise ValueError("Invalid service provided: " + service)
@@ -60,6 +62,9 @@ class TCCEdit:
         connection.commit()
 
     def remove(self, service, bid):
+        '''Removes the specified bundle identifer from the specified service.
+        '''
+
         service = service.lower()
         if not service in self.services.keys():
             raise ValueError("Invalid service provided: " + service)
@@ -77,6 +82,11 @@ class TCCEdit:
         connection.commit()
 
     def __create(self, path):
+        '''Creates a database in the event that it does not already exist.
+
+        These databases are formatted in a particular way.  Don't change this.
+        '''
+
         if not os.path.exists(os.path.dirname(path)):
             os.makedirs(os.path.dirname(path), int('700', 8))
 
@@ -106,6 +116,12 @@ class TCCEdit:
         connection.close()
 
     def __exit__(self, type, value, traceback):
+        '''This handles the closing of connections when the object is closed.
+
+        If the object is put inside a with statement (as suggested above), this
+        will be called automatically when the with is left.
+        '''
+
         if self.root:
             self.root.close()
         self.local.close()
