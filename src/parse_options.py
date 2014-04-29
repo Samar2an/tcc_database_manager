@@ -11,30 +11,33 @@ def parse (options):
     '''Parses the options given to the script.
     '''
 
-    parser = argparse.ArgumentParser(description="Can add or remove applications from the various TCC databases: Contacts, Accessbility, and iCloud.",
-                                     add_help=False)
+    parser = argparse.ArgumentParser(description="Add or remove applications from the various TCC databases: Contacts, Accessbility, and iCloud.",
+                        add_help=False)
+    parser.add_argument('-h', '--help',
+                        action='store_true')
+    parser.add_argument('-v', '--version',
+                        action='version',
+                        version=options['long_name'] + ' ' + options['version'])
+    parser.add_argument('-n', '--no-log',
+                        action='store_true')
+    parser.add_argument('-l', '--log')
+    parser.add_argument('-u', '--user',
+                        default='')
     parser.add_argument('action',
-                        choices=['add', 'remove', 'help'])
+                        nargs='?',
+                        choices=['add', 'remove'],
+                        default=None)
     parser.add_argument('service',
                         nargs='?',
                         choices=['contacts', 'accessibility', 'icloud'],
                         default=None)
     parser.add_argument('apps',
                         nargs=argparse.REMAINDER)
-    parser.add_argument('-l', '--log')
-    parser.add_argument('-n', '--no-log',
-                        action='store_true')
-    parser.add_argument('-u', '--user',
-                        default='')
-    parser.add_argument('-v', '--version',
-                        action='version',
-                        version=options['long_name'] + ' ' + options['version'])
     args = parser.parse_args()
 
-    # Consider adding sub-helps for each service?
-    # Brief description or something?
-    if args.action == "help":
+    if args.help:
         usage(options['name'])
+        sys.exit(0)
     options['action'] = args.action
     if not args.service:
         print "You must specify a service!"
