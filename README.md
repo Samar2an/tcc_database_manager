@@ -1,7 +1,7 @@
 TCC Database Manager
 ====================
 
-Apple manages access to certain services, such as the Address Book, Accessibility, and iCloud, through a couple SQL databases on the computer.  These databases are named 'TCC.db', and the purpose of this script is to help administrators to manage these databases manually.
+Apple manages access to certain services, such as the Address Book, Accessibility, and iCloud, through a couple of SQL databases on the computer.  These databases are named 'TCC.db', and the purpose of this script is to help administrators to manage these databases manually.
 
 ## Contents
 
@@ -24,7 +24,7 @@ With Mac OS X 10.8 "Mountain Lion", Apple introduced a feature which notifies us
 
 ### Problems
 
-Unfortunately, this system *does* cause issues in managed distributed environments where applicatinos may be added or removed at any time, and the database files would nee dto be updated.  Constantly having to update this file for the template user would be tedious and could cause errors: what if you forgot to add one of the new applications?
+Unfortunately, this system *does* cause issues in managed distributed environments where applications may be added or removed at any time, and the database files would need to be updated.  Constantly having to update this file for the template user would be tedious and could cause errors: what if you forgot to add one of the new applications?
 
 ### Solution
 
@@ -104,9 +104,9 @@ I wish that this utility could be used to add access to a particular service for
 
 ## Technical
 
-Apple in fact has multiple TCC.db database files in any given installation of OS X 10.8 or newer (though none of them exist until the appropriate service is requested access to).  There is one for each user, in their `~/Library/Application Support/com.apple.TCC` folder, and there is one root database, located in `/Library/Application Support/com.apple.TCC`.  The local databases (those in each user's directory) are responsible for Contacts access and iCloud access.  The settings for these applications are granted on a per-user, per-application basis this way.  However, Accessibility permissions are stored (and must be stored) in the `/Library/...` database.  I assume this is due to the nature of those types of applications that request Accessibility access (they are granted some freedoms to the machine that could potentially be undesirable, so administrative access is required to add them).
+Apple in fact has multiple TCC.db database files in any given installation of OS X 10.8 or newer (though none of them exist until the appropriate service is requested access to).  There is one for each user, in their `~/Library/Application Support/com.apple.TCC` folder, and there is one root database, located in `/Library/Application Support/com.apple.TCC`.  The local databases (those in each user's directory) are responsible for *Contacts* access and *iCloud* access.  The settings for these applications are granted on a per-user, per-application basis this way.  However, *Accessibility* permissions are stored (and must be stored) in the `/Library/...` database.  I assume this is due to the nature of those types of applications that request *Accessibility* access (they are granted some freedoms to the machine that could potentially be undesirable, so administrative access is required to add them).
 
-This script will add Accessibility requests to the `/Library/...` database (assuming it is run with root permissions).  The other requests will be added to the TCC database file located at `~/Library/Application Support/com.apple.TCC/TCC.db`.  This is Apple's default directory for an individual user's settings.
+This script will add *Accessibility* requests to the `/Library/...` database (assuming it is run with root permissions).  The other requests will be added to the TCC database file located at `~/Library/Application Support/com.apple.TCC/TCC.db`.  This is Apple's default directory for an individual user's settings.
 
 ## Attribution
 
