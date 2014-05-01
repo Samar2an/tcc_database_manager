@@ -46,7 +46,7 @@ $ tcc_database_manager [-hvn] [-l log] [-u user] {action} {service} {application
 | `-v`, `--version` | Print current version information. |
 | `-n`, `--no-log` | Prevents the program from logging.  All information that would have gone to the logs will be output to console instead. |
 | `-l log`, `--log log` | Use `log` as the logging output location. |
-| `-u user`, --user user` | Change settings for the user `user`.  This requires elevated permissions. |
+| `-u user`, `--user user` | Change settings for the user `user`.  This requires elevated permissions. |
 
 ### Actions
 
