@@ -6,14 +6,11 @@ from tcc_edit import TCCEdit
 
 # Check that the logging imports properly.
 try:
-    from helpful_tools.app_info import AppInfo
-    from helpful_tools import loggers
+    from management_tools.app_info import AppInfo
+    from management_tools import loggers
 except ImportError, e:
-    print "You need the 'Helpful Tools' module to be installed first."
-    print "https://github.com/univ-of-utah-marriott-library-apple/helpful_tools"
-    print
-    print "You can use the '-n' switch to ignore this:"
-    print "  $ location_services_manager -n ..."
+    print "You need the 'Management Tools' module to be installed first."
+    print "https://github.com/univ-of-utah-marriott-library-apple/management_tools"
     sys.exit(3)
 
 def set_globals ():
@@ -24,13 +21,13 @@ def set_globals ():
     options = {}
     options['long_name'] = 'TCC Database Manager'
     options['name'] = '_'.join(options['long_name'].lower().split())
-    options['version'] = '3.1'
+    options['version'] = '3.1.1'
 
 def setup_logger ():
     '''Creates the logger to be used throughout.
 
     If it was not specified not to create a log, the log will be created in either
-    the default location (as per helpful_tools) or a specified location.
+    the default location (as per management_tools) or a specified location.
 
     Otherwise, the logger will just be console output.
     '''
