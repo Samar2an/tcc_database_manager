@@ -21,7 +21,7 @@ def set_globals ():
     options = {}
     options['long_name'] = 'TCC Database Manager'
     options['name'] = '_'.join(options['long_name'].lower().split())
-    options['version'] = '3.1.1'
+    options['version'] = '3.1.2'
 
 def setup_logger ():
     '''Creates the logger to be used throughout.
@@ -55,21 +55,31 @@ def main ():
     logger.info("Found bundle IDs: " + str(bids))
 
     if options['action'] == "add":
-        with TCCEdit(options['user']) as e:
-            for bid in bids:
-                if options['user']:
-                    logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
-                else:
-                    logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
-                e.insert(options['service'], bid)
+        try:
+            with TCCEdit(options['user']) as e:
+                for bid in bids:
+                    if options['user']:
+                        logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
+                    else:
+                        logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
+                    e.insert(options['service'], bid)
+        except ValueError as e:
+            # There was a permissions error!
+            logger.error("Must be root to modify this service!")
+            sys.exit(7)
     else:
-        with TCCEdit(options['user']) as e:
-            for bid in bids:
-                if options['user']:
-                    logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
-                else:
-                    logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
-                e.remove(options['service'], bid)
+        try:
+            with TCCEdit(options['user']) as e:
+                for bid in bids:
+                    if options['user']:
+                        logger.info("Removing '" + bid + "' from " + options['service'] + " service for " + options['user'] + ".")
+                    else:
+                        logger.info("Removing '" + bid + "' from " + options['service'] + " service.")
+                    e.remove(options['service'], bid)
+        except ValueError as e:
+            # There was a permissions error!
+            logger.error("Must be root to modify this service!")
+            sys.exit(7)
 
 if __name__ == "__main__":
     main()

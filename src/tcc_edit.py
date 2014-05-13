@@ -8,22 +8,28 @@ class TCCEdit:
     '''
 
     def __init__(self, user=''):
+        # If no user is specified, give the current user instead.
+        if not user:
+            import getpass
+            user = getpass.getuser()
+
         # These are the locations of the databases.
-        self.root_path = '/Library/Application Support/com.apple.TCC/TCC.db'
         self.local_path = os.path.expanduser('~' + user + '/Library/Application Support/com.apple.TCC/TCC.db')
+        self.root_path = '/Library/Application Support/com.apple.TCC/TCC.db'
 
         # Check the user didn't supply a bad username.
         if not self.local_path.startswith('/'):
             raise ValueError("Invalid username supplied: " + user)
-
-        if not os.access(self.local_path, os.W_OK):
-            raise ValueError("You do not have permission to modify " + user + "'s TCC database.")
 
         # Ensure the databases exist properly.
         if os.access(self.root_path, os.W_OK) and not os.path.exists(self.root_path):
             self.__create(self.root_path)
         if not os.path.exists(self.local_path):
             self.__create(self.local_path)
+
+        # Check there is write access to user's local TCC database.
+        if not os.access(self.local_path, os.W_OK):
+            raise ValueError("You do not have permission to modify " + user + "'s TCC database.")
 
         # Create the connections.
         if os.geteuid() == 0:
