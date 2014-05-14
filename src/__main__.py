@@ -64,8 +64,8 @@ def main ():
                         logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
                     e.insert(options['service'], bid)
         except ValueError as e:
-            # There was a permissions error!
-            logger.error("Must be root to modify this service!")
+            # There was an error!
+            logger.error(e.message)
             sys.exit(7)
     else:
         try:
@@ -77,8 +77,8 @@ def main ():
                         logger.info("Removing '" + bid + "' from " + options['service'] + " service.")
                     e.remove(options['service'], bid)
         except ValueError as e:
-            # There was a permissions error!
-            logger.error("Must be root to modify this service!")
+            # There was an error!
+            logger.error(e.message)
             sys.exit(7)
 
 if __name__ == "__main__":
