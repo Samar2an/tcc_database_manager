@@ -1,14 +1,14 @@
 import argparse
 import sys
 
-def version (options):
+def version(options):
     '''Prints the version information.
     '''
 
     print "{name}, version {version}\n".format(name=options['long_name'],
                                                version=options['version'])
 
-def usage (options):
+def usage(options):
     '''Usage information.
     '''
 
@@ -18,14 +18,17 @@ def usage (options):
 usage: {} [-hvn] [-l log] [-u user]
          {} {} {}
 
-Modify access to the TCC database services.
+Modify access to the TCC database services. This only works on Mac OS X 10.8 or
+later!
 
     h : prints this help message
     v : prints the version information
     n : prevents logs from being written to file and enables console output
 
-    l log  : use 'log' as the logging output location
-    u user : change settings for 'user'
+    l log    : use 'log' as the logging output location
+    u user   : change settings for 'user'
+    d darwin : set the Darwin version manually
+               (12 for OS X 10.8, 13 for OS X 10.9)
 
 'ACTION'
     add    : add applications to the service
@@ -49,7 +52,7 @@ Modify access to the TCC database services.
 '''.format(options['name'], '{action}', '{service}', '{applications}')
     sys.exit(0)
 
-def parse (options):
+def parse(options):
     '''Parses the options given to the script.
     '''
 
@@ -63,6 +66,7 @@ def parse (options):
     parser.add_argument('-l', '--log')
     parser.add_argument('-u', '--user',
                         default='')
+    parser.add_argument('-d', '--darwin', type=int)
     parser.add_argument('action',
                         nargs='?',
                         choices=['add', 'remove'],
@@ -83,6 +87,8 @@ def parse (options):
     options['log'] = not args.no_log
     options['log_dest'] = args.log
     options['user'] = args.user
+    if args.darwin:
+        options['darwin'] = args.darwin
     if not args.action:
         print "Error: You must specify an action!"
         sys.exit(5)

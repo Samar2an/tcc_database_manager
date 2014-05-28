@@ -7,11 +7,16 @@ class TCCEdit:
     This ought to be used in a with statement to ensure proper closing of connections!
     '''
 
-    def __init__(self, user=''):
+    def __init__(self, user='', version=12):
         # If no user is specified, give the current user instead.
         if not user:
             import getpass
             user = getpass.getuser()
+
+        if version < 12:
+            raise RuntimeError("There is no TCC database on this version of OS X.")
+
+        self.version = version
 
         # These are the locations of the databases.
         self.local_path = os.path.expanduser('~' + user + '/Library/Application Support/com.apple.TCC/TCC.db')
@@ -22,7 +27,7 @@ class TCCEdit:
             raise ValueError("Invalid username supplied: " + user)
 
         # Ensure the databases exist properly.
-        if os.access(self.root_path, os.W_OK) and not os.path.exists(self.root_path):
+        if os.geteuid() == 0 and not os.path.exists(self.root_path):
             self.__create(self.root_path)
         if not os.path.exists(self.local_path):
             self.__create(self.local_path)
@@ -39,10 +44,11 @@ class TCCEdit:
         self.local = sqlite3.connect(self.local_path)
 
         # The services have particular names and databases.
+        # The tuplet is (Service Name, TCC database, Darwin version introduced)
         self.services = {}
-        self.services['accessibility'] = ('kTCCServiceAccessibility', self.root)
-        self.services['contacts'] = ('kTCCServiceAddressBook', self.local)
-        self.services['icloud'] = ('kTCCServiceUbiquity', self.local)
+        self.services['accessibility'] = ('kTCCServiceAccessibility', self.root, 13)
+        self.services['contacts'] = ('kTCCServiceAddressBook', self.local, 12)
+        self.services['icloud'] = ('kTCCServiceUbiquity', self.local, 12)
 
     def __enter__(self):
         return self
@@ -55,6 +61,9 @@ class TCCEdit:
         if not service in self.services.keys():
             raise ValueError("Invalid service provided: " + service)
 
+        if self.version < self.services[service][2]:
+            raise RuntimeError("Service '" + service + "' does not exist on this version of OS X.")
+
         connection = self.services[service][1]
 
         if not connection:
@@ -62,9 +71,14 @@ class TCCEdit:
 
         c = connection.cursor()
 
-        c.execute("INSERT or REPLACE into access values("
-                    + "'" + self.services[service][0] + "', "
-                    + "'" + bid + "', 0, 1, 0, NULL)")
+        if self.version == 12:
+            c.execute("INSERT or REPLACE into access values("
+                        + "'" + self.services[service][0] + "', "
+                        + "'" + bid + "', 0, 1, 0)")
+        else:
+            c.execute("INSERT or REPLACE into access values("
+                        + "'" + self.services[service][0] + "', "
+                        + "'" + bid + "', 0, 1, 0, NULL)")
         connection.commit()
 
     def remove(self, service, bid):
@@ -101,23 +115,37 @@ class TCCEdit:
 
         c.execute('''CREATE TABLE admin
                      (key TEXT PRIMARY KEY NOT NULL, value INTEGER NOT NULL)''')
+
         c.execute("INSERT INTO admin VALUES ('version', 7)")
-        c.execute('''CREATE TABLE access
+
+        if self.version == 12:
+            c.execute('''CREATE TABLE access
                      (service TEXT NOT NULL,
-                        client TEXT NOT NULL,
-                        client_type INTEGER NOT NULL,
-                        allowed INTEGER NOT NULL,
-                        prompt_count INTEGER NOT NULL,
-                        csreq BLOB,
-                        CONSTRAINT key PRIMARY KEY (service, client, client_type))''')
+                     client TEXT NOT NULL,
+                     client_type INTEGER NOT NULL,
+                     allowed INTEGER NOT NULL,
+                     prompt_count INTEGER NOT NULL,
+                     CONSTRAINT key PRIMARY KEY (service, client, client_type))''')
+
+        else:
+            c.execute('''CREATE TABLE access
+                     (service TEXT NOT NULL,
+                     client TEXT NOT NULL,
+                     client_type INTEGER NOT NULL,
+                     allowed INTEGER NOT NULL,
+                     prompt_count INTEGER NOT NULL,
+                     csreq BLOB,
+                     CONSTRAINT key PRIMARY KEY (service, client, client_type))''')
+
         c.execute('''CREATE TABLE access_times
                      (service TEXT NOT NULL,
-                        client TEXT NOT NULL,
-                        client_type INTEGER NOT NULL,
-                        last_used_time INTEGER NOT NULL,
-                        CONSTRAINT key PRIMARY KEY (service, client, client_type))''')
+                     client TEXT NOT NULL,
+                     client_type INTEGER NOT NULL,
+                     last_used_time INTEGER NOT NULL,
+                     CONSTRAINT key PRIMARY KEY (service, client, client_type))''')
         c.execute('''CREATE TABLE access_overrides
                      (service TEXT PRIMARY KEY NOT NULL)''')
+
         connection.commit()
         connection.close()
 
