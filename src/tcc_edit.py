@@ -7,7 +7,7 @@ class TCCEdit:
     This ought to be used in a with statement to ensure proper closing of connections!
     '''
 
-    def __init__(self, user='', version=12):
+    def __init__(self, user='', version=12, template=False, lang='English'):
         # If no user is specified, give the current user instead.
         if not user:
             import getpass
@@ -19,7 +19,12 @@ class TCCEdit:
         self.version = version
 
         # These are the locations of the databases.
-        self.local_path = os.path.expanduser('~' + user + '/Library/Application Support/com.apple.TCC/TCC.db')
+        if template:
+            if not os.geteuid() == 0:
+                raise ValueError("Only the root user may modify the User Template.")
+            self.local_path = '/System/Library/User Template/' + lang + '.lproj/Library/Application Support/com.apple.TCC/TCC.db'
+        else:
+            self.local_path = os.path.expanduser('~' + user + '/Library/Application Support/com.apple.TCC/TCC.db')
         self.root_path = '/Library/Application Support/com.apple.TCC/TCC.db'
 
         # Check the user didn't supply a bad username.

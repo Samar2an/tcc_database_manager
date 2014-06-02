@@ -21,7 +21,7 @@ def set_globals():
     options = {}
     options['long_name'] = 'TCC Database Manager'
     options['name'] = '_'.join(options['long_name'].lower().split())
-    options['version'] = '3.2.1'
+    options['version'] = '3.2.2'
 
 def setup_logger():
     '''Creates the logger to be used throughout.
@@ -57,10 +57,12 @@ def main():
 
     if options['action'] == "add":
         try:
-            with TCCEdit(options['user'], options['darwin']) as e:
+            with TCCEdit(options['user'], options['darwin'], options['template'], options['language']) as e:
                 for bid in bids:
                     if options['user']:
                         logger.info("Adding '" + bid + "' to " + options['service'] + " service for " + options['user'] + ".")
+                    elif options['template']:
+                        logger.info("Adding '" + bid + "' to the " + options['language'] + " User Template.")
                     else:
                         logger.info("Adding '" + bid + "' to " + options['service'] + " service.")
                     e.insert(options['service'], bid)
@@ -70,10 +72,12 @@ def main():
             sys.exit(7)
     else:
         try:
-            with TCCEdit(options['user'], options['darwin']) as e:
+            with TCCEdit(options['user'], options['darwin'], options['template'], options['language']) as e:
                 for bid in bids:
                     if options['user']:
                         logger.info("Removing '" + bid + "' from " + options['service'] + " service for " + options['user'] + ".")
+                    elif options['template']:
+                        logger.info("Removing '" + bid + "' from the " + options['language'] + " User Template.")
                     else:
                         logger.info("Removing '" + bid + "' from " + options['service'] + " service.")
                     e.remove(options['service'], bid)

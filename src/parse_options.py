@@ -67,6 +67,10 @@ def parse(options):
     parser.add_argument('-u', '--user',
                         default='')
     parser.add_argument('-d', '--darwin', type=int)
+    parser.add_argument('--template',
+                        action='store_true')
+    parser.add_argument('--language',
+                        default='English')
     parser.add_argument('action',
                         nargs='?',
                         choices=['add', 'remove'],
@@ -89,6 +93,8 @@ def parse(options):
     options['user'] = args.user
     if args.darwin:
         options['darwin'] = args.darwin
+    options['template'] = args.template
+    options['language'] = args.language
     if not args.action:
         print "Error: You must specify an action!"
         sys.exit(5)
