@@ -24,7 +24,12 @@ class TCCEdit:
 
         # Check the user didn't supply a bad username.
         if not self.local_path.startswith('/'):
-            raise ValueError("Invalid username supplied: " + user)
+            # The path to the home directory of 'user' couldn't be found by the
+            # system. Maybe the user exists but doesn't? Try looking in /Users/:
+            if os.path.isdir('/Users/' + user):
+                self.local_path = '/Users/' + user + '/Library/Application Support/com.apple.TCC/TCC.db'
+            else:
+                raise ValueError("Invalid username supplied: " + user)
 
         # Ensure the databases exist properly.
         if os.geteuid() == 0 and not os.path.exists(self.root_path):

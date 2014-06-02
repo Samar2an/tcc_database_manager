@@ -21,7 +21,7 @@ def set_globals():
     options = {}
     options['long_name'] = 'TCC Database Manager'
     options['name'] = '_'.join(options['long_name'].lower().split())
-    options['version'] = '3.2.0'
+    options['version'] = '3.2.1'
 
 def setup_logger():
     '''Creates the logger to be used throughout.
